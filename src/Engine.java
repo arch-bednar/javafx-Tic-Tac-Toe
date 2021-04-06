@@ -5,7 +5,7 @@ class Engine{
     
     private String [][] fields = new String[3][3];
 
-    private Engine(){
+    Engine(){
 	for (int col=3; col<3; col++){
 	    for (int row=3; row<3; row++){
 		fields[col][row] = " ";
@@ -13,17 +13,31 @@ class Engine{
 	}
     }
 
-    public String changeValue(String chr, int whosTurn){
+    public void changeValue(String chr, String loc, int whosTurn){
 	if(chr.equals(" ")){
 	    if(whosTurn==1)
-		return "X";
+		for(int i=0; i<3; i++){
+		    for(int j=0; j<3; j++){
+			String valLoc = (String)(String.valueOf(i)+","+String.valueOf(j));
+			if(valLoc.equals(loc)){
+			    fields[i][j]=chr;
+			}
+		    }
+		}
+	    
 	    else if(whosTurn==2)
-		return "O";
+		for(int i=0; i<3; i++){
+		    for(int j=0; j<3; j++){
+			String valLoc = (String.valueOf(i)+","+String.valueOf(j));
+			if(valLoc.equals(loc)){
+			    fields[i][j]=chr;
+			}
+		    }
+		}
 	}
-	return chr;
     }
 
-    private boolean diagonal(){
+    public boolean diagonal(){
 	if(fields[1][1].equals("X") || fields[1][1].equals("O")){
 	    if(fields[1][1]==fields[0][0] && fields[1][1]==fields[2][2])
 		return true;
@@ -33,13 +47,13 @@ class Engine{
 	return false;
     }
 
-    private boolean vonNeumann(){
-	for(int col=0; col<fields.length(); col++){
-	    for(int row=0; row<fields.lenght(); row++){
+    public boolean vonNeumann(){
+	for(int col=0; col<fields.length; col++){
+	    for(int row=0; row<fields.length; row++){
 		int count=0;
 
 		for(int colT=col-1; colT<col+1; colT++){
-		    if(colT<0 || colT>fields.length() || colT==col)
+		    if(colT<0 || colT>fields.length || colT==col)
 			continue;
 		    if(fields[col][row]==fields[colT][row] && (fields[col][row].equals("X") || fields[col][row].equals("O")))
 			count=count+1;
@@ -51,7 +65,7 @@ class Engine{
 
 		count=0;
 		for(int rowT=row-1; rowT<row+1; rowT++){
-		    if (rowT<0 || rowT>fields.length() || rowT==row)
+		    if (rowT<0 || rowT>fields.length || rowT==row)
 			continue;
 		    if (fields[col][row]==fields[col][rowT] && (fields[col][row].equals("X") || fields[col][row].equals("O")))
 			count++;
@@ -63,9 +77,5 @@ class Engine{
 	    }
 	}
 	return false;
-    }
-
-    private boolean isFilled(Pane pane){
-	
     }
 }

@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -21,9 +22,13 @@ import javafx.scene.text.Text;
 import java.io.FileInputStream;
 import javafx.scene.Group;
 import javafx.stage.Stage;
-
+import javafx.scene.text.*;;
+    
 public class game extends Application{
 
+    private int turn=1;
+    private String field;
+    private Engine newGame;
     public static void main(String[] args){
 	launch(args);
     }
@@ -103,6 +108,8 @@ public class game extends Application{
 	plane.setFitWidth(256);
 	plane.setFitHeight(256);
 	*/
+
+	newGame = new Engine();
 	Button quit = new Button();
 	quit.setText("Exit");
 	quit.setCancelButton(true);
@@ -131,6 +138,30 @@ public class game extends Application{
 	stage.setTitle(mode);
 	stage.setScene(play);
 	stage.show();
+
+	
+	if(mode.equals("PvP")){
+	    Player playerOne = new Player();
+	    Player playerTwo = new Player("Gracz");
+	}else{
+	    Player playerOne = new Player("Gracz1");
+	    Player playerTwo = new Player("Gracz2");
+	}
+
+	/*	while(true){
+	    turn=1;
+	    if(newGame.diagonal() || newGame.vonNeumann()){
+		endGame();
+	    }
+	    turn=2;
+	    if(newGame.diagonal() || newGame.vonNeumann())
+		endGame();
+	}
+	*/
+    }
+
+    public void endGame(){
+	
     }
 
     private void makeMesh(GridPane grid){
@@ -146,6 +177,41 @@ public class game extends Application{
 	    for(int row=0; row<3; row++){
 		Pane pane = new Pane();
 		pane.getStyleClass().add("game-grid-cell");
+		Text location = new Text(String.valueOf(row)+","+String.valueOf(col));
+		Text text = new Text(" ");
+		text.setVisible(false);
+		pane.getChildren().addAll(location, text);
+
+		pane.setOnMousePressed(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent event){
+			    Text tempText = (Text)pane.getChildren().get(1);
+			    Text tempLoc = (Text)pane.getChildren().get(0);
+			    
+			    System.out.println(tempText.getText());
+
+			    if(this.turn==1){
+				pane.getChildren().removeAll();
+				Text changedText = new Text("O");
+				//changedText.setVisible(false);
+				pane.getChildren().set(0,changedText);
+				newGame.changeValue(tempText.getText(), tempLoc.getText(), turn);
+				if(newGame.vonNeumann() || newGame.diagonal())
+				    System.out.println("End game O");
+				this.turn=2;
+			    }
+			    else{
+				pane.getChildren().removeAll();
+				Text changedText = new Text("X");
+				//changedText.setVisible(false);
+				pane.getChildren().set(0, changedText);
+				newGame.changeValue(tempText.getText(), tempLoc.getText(), turn);
+				if(newGame.vonNeumann() || newGame.diagonal())
+				    System.out.println("End game X");
+				this.turn=1;
+			    }
+			}
+		    });
+		    
 		if(col==0)
 		    pane.getStyleClass().add("first-column");
 		if(row==0)

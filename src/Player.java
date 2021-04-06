@@ -2,12 +2,12 @@ class Player{
     private String name;
     private boolean isAI;
 
-    private Player(){
+    Player(){
 	name="Computer";
 	isAI=true;
     }
     
-    private Player(String n){
+    Player(String n){
 	name=n;
 	isAI=false;
     }
